@@ -1,5 +1,5 @@
-import { routeNotFound } from '@/middleware';
-import { Router } from 'express';
+import { routeNotFound } from "@/middleware";
+import { Router } from "express";
 
 const routes = Router();
 
