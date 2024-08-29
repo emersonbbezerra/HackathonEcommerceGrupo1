@@ -1,0 +1,12 @@
+{
+  "entry": ["src/**/*.ts"],
+  "splitting": false,
+  "sourcemap": true,
+  "clean": true,
+  "exclude": [
+    "node_modules",
+    "src/**/*.http",
+    "src/**/*spec.ts",
+    "src/**/*test.ts"
+  ]
+}
