@@ -8,7 +8,7 @@
 
 ## 💻 Pré-requisitos
 
-## 🚀 Instalando <nome_do_projeto>
+## 🚀 Instalando
 
 ## 🤝 Colaboradores
 
@@ -24,7 +24,7 @@
     </td>
     <td align="center">
       <a href="https://github.com/{NAME}" title="defina o título do link">
-        <img src="https://avatars.githubusercontent.com/u/{ID}" width="100px;" alt="Foto do Igor Oliveira"/><br>
+        <img src="https://avatars.githubusercontent.com/u/140111174" width="100px;" alt="Foto do Igor Oliveira"/><br>
         <sub>
           <b>Igor Oliveira</b>
         </sub>
@@ -40,7 +40,7 @@
     </td>
     <td align="center">
       <a href="https://github.com/{NAME}" title="defina o título do link">
-        <img src="https://avatars.githubusercontent.com/u/{ID}" width="100px;" alt="Foto do Emerson Bezerra"/><br>
+        <img src="https://avatars.githubusercontent.com/u/120873878" width="100px;" alt="Foto do Emerson Bezerra"/><br>
         <sub>
           <b>Emerson Bezerra</b>
         </sub>
