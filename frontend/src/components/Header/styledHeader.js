@@ -9,10 +9,10 @@ export const HeaderContainer = styled.header`
     background-image: url(${img});
     background-repeat: no-repeat;
     background-position: center;
-    padding: 1rem;
+    padding: 1.5rem 0;
 
     h1{
-        font-size: 15rem;
+        font-size: 12rem;
         font-family: "Nanum Pen Script", cursive;
     }
 
@@ -22,7 +22,7 @@ export const HeaderContainer = styled.header`
         }
     }
 
-    @media(max-width: 870px){
+    @media(max-width: 1100px){
         h1{
             font-size: 5rem;
         }

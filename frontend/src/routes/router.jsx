@@ -7,14 +7,14 @@ import { ListOfOptions } from '../pages/ListOfOptions/ListOfOptions'
 import Cart from '../pages/CartPage/Cart'
 import { Navbar } from '../components/Navbar/Navbar'
 import { Checkout } from '../pages/Checkout/Checkout'
-import { useSelector } from 'react-redux'
 import { DrinksMenu } from '../pages/drinksMenu/DrinksMenu'
 import { DessertsMenu } from '../pages/dessertsMenu/DessertsMenu'
 import { SnacksMenu } from '../pages/snacksMenu/SnacksMenu'
+import CheckoutFormPage from '../pages/CheckoutFormPage/CheckoutFormPage'
 
 
 export const Router = () => {
-  const { currentUser } = useSelector((rootReducer) => rootReducer.userReducer);
+  
   return (
     <BrowserRouter> 
       <Navbar />
@@ -28,7 +28,9 @@ export const Router = () => {
         <Route path='/aperitivos' element={<SnacksMenu />}/>
         <Route path='/listofoptions' element={<ListOfOptions />} />
         <Route path='/cart' element={<Cart />} />
+        <Route path='/form' element={<CheckoutFormPage />} />
         <Route path='/checkout' element={<Checkout />} />
+
         
       </Routes>
     </BrowserRouter>

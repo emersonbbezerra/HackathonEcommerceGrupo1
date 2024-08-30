@@ -34,6 +34,10 @@ export const goToCartPage = (navigator) => {
     navigator('/cart')
 }
 
+export const goToCheckouFormtPage = (navigator) => {
+    navigator('/form')
+}
+
 export const goToCheckoutPage = (navigator) => {
     navigator('/checkout')
 }
