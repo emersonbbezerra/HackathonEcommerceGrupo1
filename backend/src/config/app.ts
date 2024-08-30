@@ -1,7 +1,7 @@
-import express, { Application, json, urlencoded } from 'express';
+import express, { Application, json, urlencoded } from "express";
 
-import { routeNotFound } from '@/middleware';
-import { routes } from '@/routes';
+import { routeNotFound } from "@/middleware";
+import { routes } from "@/routes";
 
 class App {
   private readonly app: Application;
