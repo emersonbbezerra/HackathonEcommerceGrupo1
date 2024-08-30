@@ -1,4 +1,4 @@
-class ServerResponse<T> {
+export class ServerResponse<T> {
   readonly message: string;
   private readonly statusCode: number;
   private readonly respData?: T;
