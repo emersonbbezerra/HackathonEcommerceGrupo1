@@ -3,8 +3,11 @@ import { useCart } from "../../context/CartContext";
 import { useOtherProductsCart } from "../../context/OtherProductsCartContext";
 import img from "../../assets/chef-2.png";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Cart = () => {
+  const { currentUser } = useSelector((rootReducer) => rootReducer.userReducer);
+  
   const {
     cartItems,
     removeFromCart,
@@ -45,9 +48,12 @@ const Cart = () => {
   };
 
   const handleFinishOrder = () => {
-    navigate("/checkout");
-    clearCart();
-    clearCartOtherProducts();
+    if(currentUser){
+      navigate("/checkout")
+    } else {
+      navigate("/form");
+    }    
+    
   };
 
   return (

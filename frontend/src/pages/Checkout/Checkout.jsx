@@ -4,7 +4,6 @@ import { useProtectedPage } from "../../hooks/useProtectedPages"
 
 export const Checkout = () => {
     const navigate = useNavigate()
-    useProtectedPage(navigate)
     
     return (
         <div className="flex justify-around bg-black text-white min-h-[37vh]">

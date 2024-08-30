@@ -49,7 +49,7 @@ export const Homepage = () => {
                     </div>
                     <img className="w-full md:w-1/4 h-auto" src={img} alt="Chef" />
                 </div>
-                
+                <h2 className="mr-5 text-5xl text-orange-500 cursor-pointer hover:text-blue-500 w-fit">Cadastre-se e ganhe descontos especiais e outros benefícios!</h2>
             </div>
         </div>
     );
