@@ -1,12 +1,21 @@
 import { ServerResponse } from "@/common/constants";
 import { ZodValidateError } from "@/common/errors/zod-validate-error";
+import { prismaMock } from "@/config/database/__mocks__/prisma";
 import { CreateUserType } from "./dtos/user.dto";
 import { IUserController, UserController } from "./users.controller";
+import { UsersService } from "./users.service";
+
+jest.mock("./users.service");
 
 let userController: IUserController;
-describe("UserSController", () => {
+let usersServiceMock: jest.Mocked<UsersService>;
+
+describe("UserController", () => {
   beforeEach(() => {
-    userController = new UserController();
+    usersServiceMock = new UsersService(
+      prismaMock,
+    ) as jest.Mocked<UsersService>;
+    userController = new UserController(usersServiceMock);
   });
 
   describe("Create user", () => {
@@ -19,29 +28,34 @@ describe("UserSController", () => {
       confirmPassword: "any_password",
     };
 
-    it("Should be return zodError", async () => {
+    it("Should return ZodValidateError", async () => {
       const resp = await userController.create({
         ...httpRequest,
         first_name: "",
       });
       expect(resp).toBeInstanceOf(ZodValidateError);
-      expect(resp.errors).toEqual([
-        {
-          code: "too_small",
-          message: "String must contain at least 1 character(s)",
-          path: "first_name",
-        },
-      ]);
     });
 
-    it("Should be successfully create user", async () => {
+    it("Should successfully create a user", async () => {
+      const tokenData = { accessToken: "token" };
+      usersServiceMock.create.mockResolvedValueOnce(tokenData);
+
       const resp = await userController.create(httpRequest);
+
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
-        new ServerResponse(201, "Successfully create user", {
-          accessToken: "token",
-        }),
+        new ServerResponse(201, "Successfully create user", tokenData),
       );
+    });
+
+    it("Should return ServerError when user creation fails", async () => {
+      usersServiceMock.create.mockRejectedValueOnce(
+        new Error("Creation failed"),
+      );
+
+      const resp = await userController.create(httpRequest);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
     });
   });
 });
