@@ -10,134 +10,118 @@ Neste hackathon, você e sua equipe criarão um **e-commerce simples para pequen
 
 ## Funcionalidades Básicas 🛠️
 
-- **Catálogo de Produtos:**
-
+- [x] **Catálogo de Produtos:**
   - Fotos, descrições, preços e opções de variação (tamanho, sabor, etc.).
 
-- **Carrinho de Compras:**
-
+- [x] **Carrinho de Compras:**
   - Adição, remoção e modificação dos itens desejados.
 
-- **Checkout:**
-
+- [ ] **Checkout:**
   - Preenchimento dos dados de entrega e pagamento.
 
-- **Integração com WhatsApp:**
-
+- [ ] **Integração com WhatsApp:**
   - Envio do pedido em formato de texto para o WhatsApp do cliente.
 
-- **Banco de Dados:**
+- [ ] **Banco de Dados:**
   - Armazenamento dos dados dos produtos, pedidos e clientes.
 
 ## Implementações Obrigatórias 🧩
 
-- **Autenticação de Usuário:**
-
+- [ ] **Autenticação de Usuário:**
   - Implementar um sistema de autenticação para usuários (clientes) e/ou administradores, permitindo login e registro.
 
-- **Consumo de API:**
-
+- [ ] **Consumo de API:**
   - Criar ou consumir uma API para realizar por exemplo: operações CRUD (Create, Read, Update, Delete) com produtos, pedidos, clientes ou pagamentos.
 
-- **Carrinho de Compras Persistente:**
-
+- [ ] **Carrinho de Compras Persistente:**
   - Implementar um mecanismo para que o carrinho de compras do cliente seja mantido durante a navegação e após a autenticação.
 
-- **Sistema de Pagamento:**
-
+- [ ] **Sistema de Pagamento:**
   - Implementar uma integração básica para um método de pagamento (por exemplo, simulação de PIX).
 
-- **Envio de Pedidos:**
+- [ ] **Envio de Pedidos:**
   - Implementar uma funcionalidade para enviar o pedido em formato de texto para um número de WhatsApp pré-configurado.
 
 ## Sugestões de E-commerce 🌟
 
-1. **Lanchonete:** Venda de sanduíches, salgados, bebidas e combos.
-2. **Pizzaria:** Venda de pizzas salgadas e doces, com opções de recheios e tamanhos.
-3. **Sorveteria:** Venda de sorvetes em diversos sabores, casquinhas, caldas e acompanhamentos.
-4. **Loja de Conveniência:** Produtos alimentícios, bebidas, higiene pessoal e outros itens básicos.
-5. **Padaria:** Pães, doces, salgados, bolos e outros produtos de padaria.
-6. **Açougue:** Carnes, aves, frios, temperos e outros produtos de açougue.
-7. **Hortifrúti:** Frutas, legumes, verduras e produtos orgânicos.
-8. **Farmácia:** Medicamentos, cosméticos, produtos de higiene pessoal e outros itens de saúde.
-9. **Loja de Presentes:** Brinquedos, artigos de decoração, presentes personalizados e outros itens.
-10. **Brechó:** Roupas, sapatos, acessórios e outros itens usados em bom estado.
+- [ ] **Lanchonete:** Venda de sanduíches, salgados, bebidas e combos.
+- [x] **Pizzaria:** Venda de pizzas salgadas e doces, com opções de recheios e tamanhos.
+- [ ] **Sorveteria:** Venda de sorvetes em diversos sabores, casquinhas, caldas e acompanhamentos.
+- [ ] **Loja de Conveniência:** Produtos alimentícios, bebidas, higiene pessoal e outros itens básicos.
+- [ ] **Padaria:** Pães, doces, salgados, bolos e outros produtos de padaria.
+- [ ] **Açougue:** Carnes, aves, frios, temperos e outros produtos de açougue.
+- [ ] **Hortifrúti:** Frutas, legumes, verduras e produtos orgânicos.
+- [ ] **Farmácia:** Medicamentos, cosméticos, produtos de higiene pessoal e outros itens de saúde.
+- [ ] **Loja de Presentes:** Brinquedos, artigos de decoração, presentes personalizados e outros itens.
+- [ ] **Brechó:** Roupas, sapatos, acessórios e outros itens usados em bom estado.
 
 ## Definições da Equipe 🤝
 
 Para garantir uma boa colaboração e alinhamento, responda às seguintes perguntas em equipe:
 
 ### **1. Qual será o nome do e-commerce do time?**
-
-- **Objetivo:** Escolha um nome que represente bem o tipo de negócio e que seja atraente para os clientes.
-- **Perguntas para reflexão:**
+- [x] **Objetivo:** Escolha um nome que represente bem o tipo de negócio e que seja atraente para os clientes.
+- [ ] **Perguntas para reflexão:**
   - O nome reflete o tipo de produto ou serviço oferecido?
   - É fácil de lembrar e pronunciar?
   - O nome é único e não conflita com marcas existentes?
-- **Dicas:** Faça uma lista de possíveis nomes, discuta com a equipe e realize uma pesquisa para garantir que o nome esteja disponível para registro de domínio e redes sociais.
+- [ ] **Dicas:** Faça uma lista de possíveis nomes, discuta com a equipe e realize uma pesquisa para garantir que o nome esteja disponível para registro de domínio e redes sociais.
 
 ### **2. Qual será o design da logo do e-commerce do time?**
-
-- **Objetivo:** Criar uma logo que represente visualmente o e-commerce e seja memorável.
-- **Perguntas para reflexão:**
-  - A logo reflete a identidade e os valores do e-commerce?
+- [x] **Objetivo:** Criar uma logo que represente visualmente o e-commerce e seja memorável.
+- [ ] **Perguntas para reflexão:**
+  - A logo reflete a identidade e os valores do e-commerce? * PENDENTE *
   - É versátil e funciona bem em diferentes tamanhos e fundos?
   - A logo é facilmente reconhecível e distingue o e-commerce da concorrência?
-- **Dicas:** Utilize ferramentas de design como Adobe Illustrator, Figma ou Canva. Considere trabalhar com um designer gráfico ou fazer testes de design com a equipe para obter feedback.
+- [ ] **Dicas:** Utilize ferramentas de design como Adobe Illustrator, Figma ou Canva. Considere trabalhar com um designer gráfico ou fazer testes de design com a equipe para obter feedback.
 
 ### **3. Como será a identidade visual do e-commerce do time?**
-
-- **Objetivo:** Desenvolver uma identidade visual consistente que inclui a paleta de cores, tipografia e estilo gráfico.
-- **Perguntas para reflexão:**
+- [ ] **Objetivo:** Desenvolver uma identidade visual consistente que inclui a paleta de cores, tipografia e estilo gráfico.
+- [ ] **Perguntas para reflexão:**
   - A identidade visual é coesa e harmoniosa?
   - As cores e fontes escolhidas são adequadas para o público-alvo e o tipo de produto?
   - A identidade visual é aplicada de forma consistente em todos os materiais do e-commerce?
-- **Dicas:** Defina uma paleta de cores e uma fonte padrão. Utilize guias de estilo para garantir a consistência em todas as páginas e materiais promocionais.
+- [ ] **Dicas:** Defina uma paleta de cores e uma fonte padrão. Utilize guias de estilo para garantir a consistência em todas as páginas e materiais promocionais.
 
 ### **4. Qual será o nome da equipe?**
-
-- **Objetivo:** Escolha um nome que reflita o espírito da equipe e que seja fácil de lembrar.
-- **Perguntas para reflexão:**
+- [x] **Objetivo:** Escolha um nome que reflita o espírito da equipe e que seja fácil de lembrar. Palooza Team
+- [?] **Perguntas para reflexão:**
   - O nome representa a identidade e os valores da equipe?
   - É criativo e distintivo?
   - É fácil de pronunciar e lembrar?
-- **Dicas:** Brainstorming em grupo pode ajudar a gerar nomes criativos. Considere utilizar um nome que também possa se relacionar com o projeto ou o tema do hackathon.
+- [?] **Dicas:** Brainstorming em grupo pode ajudar a gerar nomes criativos. Considere utilizar um nome que também possa se relacionar com o projeto ou o tema do hackathon.
 
 ### **5. Quais serão as principais características e diferenciais do seu e-commerce?**
-
-- **Objetivo:** Defina o que fará seu e-commerce se destacar da concorrência.
-- **Perguntas para reflexão:**
+- [x] **Objetivo:** Defina o que fará seu e-commerce se destacar da concorrência. R: A disponibilidade de promoções e programas de recompensas a partir do login, podendo assim, enviar campanhas de marketing através do e-mail de cadastro.
+- [x] **Perguntas para reflexão:**
   - O que o torna único em comparação com outros e-commerces similares?
   - Quais características especiais ou funcionalidades vocês irão oferecer?
   - Como vocês irão destacar o valor para o cliente?
-- **Dicas:** Considere funcionalidades exclusivas, promoções, uma experiência de usuário diferenciada ou qualquer outro elemento que possa diferenciar seu projeto no mercado.
+- [x] **Dicas:** Considere funcionalidades exclusivas, promoções, uma experiência de usuário diferenciada ou qualquer outro elemento que possa diferenciar seu projeto no mercado.
 
 ### **6. Quem serão os responsáveis por cada parte do projeto?**
-
-- **Objetivo:** Distribua as tarefas e responsabilidades entre os membros da equipe para garantir uma boa divisão de trabalho.
-- **Perguntas para reflexão:**
+- [ ] **Objetivo:** Distribua as tarefas e responsabilidades entre os membros da equipe para garantir uma boa divisão de trabalho.
+- [ ] **Perguntas para reflexão:**
   - Quem será responsável pelo front-end, back-end, design e outros aspectos?
   - Como será a comunicação entre os membros para garantir que todos saibam suas responsabilidades?
   - Como serão gerenciadas as integrações entre diferentes partes do projeto?
-- **Dicas:** Crie um plano de projeto e um cronograma, atribua tarefas com base nas habilidades e interesses de cada membro e use ferramentas de gerenciamento de projetos para acompanhar o progresso.
+- [ ] **Dicas:** Crie um plano de projeto e um cronograma, atribua tarefas com base nas habilidades e interesses de cada membro e use ferramentas de gerenciamento de projetos para acompanhar o progresso.
 
 ### **7. Qual será o fluxo de trabalho da equipe? (git flow)**
-
-- **Objetivo:** Defina como a equipe se comunicará, como será o processo de desenvolvimento e como serão feitas as revisões.
-- **Perguntas para reflexão:**
+- [ ] **Objetivo:** Defina como a equipe se comunicará, como será o processo de desenvolvimento e como serão feitas as revisões.
+- [ ] **Perguntas para reflexão:**
   - Qual será o processo de desenvolvimento e integração contínua?
   - Como serão gerenciadas as branches e pull requests no Git?
   - Como e com que frequência serão feitas as revisões de código e as reuniões de status?
-- **Dicas:** Adote uma estratégia de git flow e documente as práticas para garantir uma colaboração eficiente e um controle de versão adequado.
+- [ ] **Dicas:** Adote uma estratégia de git flow e documente as práticas para garantir uma colaboração eficiente e um controle de versão adequado.
 
 ### **8. Como vocês irão validar e testar as funcionalidades do e-commerce?**
-
-- **Objetivo:** Planeje como vocês irão realizar testes e validar que todas as funcionalidades estão funcionando corretamente.
-- **Perguntas para reflexão:**
+- [ ] **Objetivo:** Planeje como vocês irão realizar testes e validar que todas as funcionalidades estão funcionando corretamente.
+- [ ] **Perguntas para reflexão:**
   - Quais tipos de testes serão realizados (unitários, integração, aceitação, etc.)?
   - Como será feita a validação com usuários reais?
   - Qual será o processo para identificar e corrigir bugs?
-- **Dicas:** Desenvolva um plano de testes abrangente, utilize ferramentas de automação de testes quando possível e envolva usuários no processo de validação para obter feedback prático.
+- [ ] **Dicas:** Desenvolva um plano de testes abrangente, utilize ferramentas de automação de testes quando possível e envolva usuários no processo de validação para obter feedback prático.
 
 ## Detalhes Técnicos 🔧
 

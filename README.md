@@ -23,8 +23,8 @@
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/{NAME}" title="defina o título do link">
-        <img src="https://avatars.githubusercontent.com/u/140111174" width="100px;" alt="Foto do Igor Oliveira"/><br>
+      <a href="https://github.com/IgoRenatoo" title="defina o título do link">
+        <img src="https://avatars.githubusercontent.com/u/140111174?v=4" width="100px;" alt="Foto do Igor Oliveira"/><br>
         <sub>
           <b>Igor Oliveira</b>
         </sub>
