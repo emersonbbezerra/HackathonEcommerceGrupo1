@@ -173,7 +173,7 @@ describe("UserController", () => {
     it("Should successfully update a user", async () => {
       usersServiceMock.update.mockResolvedValueOnce(true);
 
-      const resp = await userController.update(id, httpRequest);
+      const resp = await userController.update({ id, body: httpRequest });
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
@@ -187,9 +187,12 @@ describe("UserController", () => {
         throw zodError;
       });
 
-      const resp = await userController.update(id, {
-        ...httpRequest,
-        email: "",
+      const resp = await userController.update({
+        id,
+        body: {
+          ...httpRequest,
+          email: "",
+        },
       });
 
       expect(resp).toBeInstanceOf(ZodValidateError);
@@ -200,7 +203,32 @@ describe("UserController", () => {
       const errorMessage = "Update failed";
       usersServiceMock.update.mockRejectedValueOnce(new Error(errorMessage));
 
-      const resp = await userController.update(id, httpRequest);
+      const resp = await userController.update({ id, body: httpRequest });
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
+    });
+  });
+
+  describe("Delete user", () => {
+    const id = "user-id";
+
+    it("Should successfully delete a user", async () => {
+      usersServiceMock.delete.mockResolvedValueOnce(true);
+
+      const resp = await userController.delete(id);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(
+        new ServerResponse(202, "Successfully update user", true),
+      );
+    });
+
+    it("Should return ServerResponse with error when delete fails", async () => {
+      const errorMessage = "Deletion failed";
+      usersServiceMock.delete.mockRejectedValueOnce(new Error(errorMessage));
+
+      const resp = await userController.delete(id);
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(new ServerResponse(500, errorMessage));
