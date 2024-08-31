@@ -39,15 +39,15 @@ class UsersService implements IUsersService {
   async create(
     data: CreateUserType,
   ): Promise<{ accessToken: string } | ServerError> {
-    const [emailExist, phoneExist] = await Promise.all([
-      this.getByUnique({ field: "email", value: data.email }),
-      this.getByUnique({ field: "phone", value: data.phone }),
-    ]);
-    if (emailExist || phoneExist) throw new Error("User already exist.");
+    const userExist = await this.getByUnique({
+      field: "email",
+      value: data.email,
+    });
+    if (userExist) throw new Error("User already exist.");
 
     const { password, confirmPassword, ...rest } = data;
 
-    if (password !== confirmPassword) return new ServerError();
+    if (password !== confirmPassword) throw new ServerError();
 
     const passwordHash = await bcrypt.hash(data.password, 12);
 
@@ -57,7 +57,7 @@ class UsersService implements IUsersService {
         password: passwordHash,
       },
     });
-    if (!result) return new ServerError();
+    if (!result) throw new ServerError();
 
     // TODO: logica de login aqui
 
@@ -88,17 +88,20 @@ class UsersService implements IUsersService {
     data: UpdateUserType;
   }): Promise<boolean | ServerError> {
     const user = await this.getByUnique({ field: "id", value: id });
-    if (!user) return new ServerError("User not exist.");
+    if (!user) throw new ServerError("User not exist.");
 
-    const result = await this.prisma.user.update({ where: { id }, data });
-    if (!result) return new ServerError("Update failed");
+    const result = await this.prisma.user.update({
+      where: { id: user.id },
+      data: data,
+    });
+    if (!result) throw new ServerError("Update failed");
 
     return true;
   }
 
   async delete(id: string): Promise<boolean | ServerError> {
-    const user = await this.getByUnique({ field: "id", value: id });
-    if (!user) return new ServerError("User not exist.");
+    const user = await this.prisma.user.delete({ where: { id } });
+    if (!user) throw new ServerError("User not exist.");
 
     return true;
   }
