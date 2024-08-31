@@ -2,16 +2,27 @@ import { ServerResponse } from "@/common/constants";
 import { ZodValidateError } from "@/common/errors/zod-validate-error";
 import { ZodError } from "zod";
 import { CreateUserDTO, CreateUserType } from "./dtos/user.dto";
+import { UserSchema } from "./entities/user";
 import { UsersService } from "./users.service";
 
 export interface IUserController {
   create(body: CreateUserType): Promise<ServerResponse<any> | ZodValidateError>;
+  findAll(): Promise<ServerResponse<UserSchema[] | null>>;
 }
 
 class UserController implements IUserController {
   private readonly usersService: UsersService;
   constructor(usersService?: UsersService) {
     this.usersService = usersService || new UsersService();
+  }
+
+  async findAll(): Promise<ServerResponse<UserSchema[] | null>> {
+    try {
+      const result = await this.usersService.findAll();
+      return new ServerResponse(200, "Successfully find all user", result);
+    } catch (error: any) {
+      return new ServerResponse(400, error.message);
+    }
   }
 
   async create(
