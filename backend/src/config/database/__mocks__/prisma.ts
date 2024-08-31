@@ -8,8 +8,10 @@ export const prismaMock = {
     delete: jest.fn(),
   },
   product: {
+    findMany: jest.fn(),
     findFirst: jest.fn(),
     create: jest.fn(),
-    findMany: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
   },
 };
