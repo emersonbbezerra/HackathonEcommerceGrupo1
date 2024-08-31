@@ -6,7 +6,7 @@ import { ProductSchema } from "./entities/product";
 
 export interface IProductsService {
   findAll(): Promise<ProductSchema[]>;
-  create(data: CreateProductType): Promise<ServerError>;
+  create(data: CreateProductType): Promise<ProductSchema | ServerError>;
   getByUnique({
     field,
     value,
@@ -27,23 +27,28 @@ class ProductsService implements IProductsService {
     return result;
   }
 
-  async create(data: CreateProductType): Promise<ServerError> {
-    const [nameExist, categoryExist] = await Promise.all([
-      this.getByUnique({ field: "name", value: data.name }),
-      this.getByUnique({ field: "category", value: data.category }),
-    ]);
+  async create(data: CreateProductType): Promise<ProductSchema | ServerError> {
+    try {
+      const [nameExist, categoryExist] = await Promise.all([
+        this.getByUnique({ field: "name", value: data.name }),
+        this.getByUnique({ field: "category", value: data.category }),
+      ]);
 
-    if (nameExist && categoryExist) throw new Error("Product already exist.");
+      if (nameExist && categoryExist)
+        throw new Error("Product already exists.");
 
-    const { name, description, price, category } = data;
+      const { name, description, price, category } = data;
 
-    const result = await this.prisma.product.create({
-      data: { name, description, price, category },
-    });
+      const result = await this.prisma.product.create({
+        data: { name, description, price, category },
+      });
 
-    if (!result) return new ServerError();
+      if (!result) throw new Error("Failed to create product");
 
-    return result;
+      return result;
+    } catch (error) {
+      return new ServerError();
+    }
   }
 
   async getByUnique({
