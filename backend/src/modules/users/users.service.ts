@@ -1,7 +1,7 @@
 import { ServerError } from "@/common/errors/server-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
 import { Prisma } from "@/config/database/prisma";
-import { CreateUserType } from "./dtos/user.dto";
+import { CreateUserType, UpdateUserType } from "./dtos/user.dto";
 import { UserSchema } from "./entities/user";
 
 export interface IUsersService {
@@ -14,6 +14,13 @@ export interface IUsersService {
     field: string;
     value: string | number;
   }): Promise<UserSchema | null>;
+  update({
+    id,
+    data,
+  }: {
+    id: string;
+    data: UpdateUserType;
+  }): Promise<boolean | ServerError>;
 }
 
 class UsersService implements IUsersService {
@@ -65,6 +72,21 @@ class UsersService implements IUsersService {
 
     return user;
   }
-}
 
+  async update({
+    id,
+    data,
+  }: {
+    id: string;
+    data: UpdateUserType;
+  }): Promise<boolean | ServerError> {
+    const user = await this.getByUnique({ field: "id", value: id });
+    if (!user) throw new Error("User not exist.");
+
+    const result = await this.prisma.user.update({ where: { id }, data });
+    if (!result) return new ServerError();
+
+    return true;
+  }
+}
 export { UsersService };
