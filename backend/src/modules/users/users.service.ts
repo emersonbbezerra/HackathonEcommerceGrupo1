@@ -21,6 +21,7 @@ export interface IUsersService {
     id: string;
     data: UpdateUserType;
   }): Promise<boolean | ServerError>;
+  delete(id: string): Promise<boolean | ServerError>;
 }
 
 class UsersService implements IUsersService {
@@ -81,10 +82,17 @@ class UsersService implements IUsersService {
     data: UpdateUserType;
   }): Promise<boolean | ServerError> {
     const user = await this.getByUnique({ field: "id", value: id });
-    if (!user) throw new Error("User not exist.");
+    if (!user) return new ServerError("User not exist.");
 
     const result = await this.prisma.user.update({ where: { id }, data });
-    if (!result) return new ServerError();
+    if (!result) return new ServerError("Update failed");
+
+    return true;
+  }
+
+  async delete(id: string): Promise<boolean | ServerError> {
+    const user = await this.getByUnique({ field: "id", value: id });
+    if (!user) return new ServerError("User not exist.");
 
     return true;
   }
