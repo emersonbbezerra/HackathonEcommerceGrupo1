@@ -12,7 +12,7 @@ const User = z.object({
   last_name: z.string().min(1),
   email: z.string().email(),
   image: z.string().url().nullable(),
-  phone: z.number(),
+  phone: z.string(),
   password: z.string().min(5),
   role: z.nativeEnum(roleUser),
   createdAt: z.date(),
