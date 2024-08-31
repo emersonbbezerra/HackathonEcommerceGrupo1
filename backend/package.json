@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "node ./dist/server.cjs",
+    "start": "node ./dist/server.js",
     "start:dev": "tsx watch --env-file=.env src/server.ts",
     "build": "tsup",
     "test": "jest --passWithNoTests --no-cache --runInBand",
