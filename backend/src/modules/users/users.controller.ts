@@ -15,10 +15,13 @@ export interface IUserController {
   create(body: CreateUserType): Promise<ServerResponse<any> | ZodValidateError>;
   findAll(): Promise<ServerResponse<UserSchema[] | null>>;
   findOne(params): Promise<ServerResponse<UserSchema | null>>;
-  update(
-    id: string,
-    body: UpdateUserType,
-  ): Promise<ServerResponse<any> | ZodValidateError>;
+  update({
+    id,
+    body,
+  }: {
+    id: string;
+    body: UpdateUserType;
+  }): Promise<ServerResponse<any> | ZodValidateError>;
   delete(id: string): Promise<ServerResponse<boolean | ServerError>>;
 }
 
@@ -63,10 +66,13 @@ class UserController implements IUserController {
     }
   }
 
-  async update(
-    id: string,
-    body: UpdateUserType,
-  ): Promise<ServerResponse<any> | ZodValidateError> {
+  async update({
+    id,
+    body,
+  }: {
+    id: string;
+    body: UpdateUserType;
+  }): Promise<ServerResponse<any> | ZodValidateError> {
     try {
       const data = UpdateUserDTO.parse(body);
       if (!data) throw new Error(data);
