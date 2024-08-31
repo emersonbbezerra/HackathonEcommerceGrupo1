@@ -6,6 +6,7 @@ import { LoginDTO, LoginSchema } from "./dtos/auth.dto";
 
 export interface IAuthController {
   login(body: LoginSchema): Promise<ServerResponse<any> | ZodValidateError>;
+  logout(userId: string): Promise<ServerResponse<boolean>>;
 }
 
 class AuthController implements IAuthController {
@@ -27,6 +28,15 @@ class AuthController implements IAuthController {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
+      return new ServerResponse(500, error.message);
+    }
+  }
+
+  async logout(userId: string): Promise<ServerResponse<boolean>> {
+    try {
+      const result = await this.authService.logout({ id: userId });
+      return new ServerResponse(200, "Successfully logout", result);
+    } catch (error: any) {
       return new ServerResponse(500, error.message);
     }
   }
