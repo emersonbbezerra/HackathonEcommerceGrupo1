@@ -13,9 +13,9 @@ route.post("/users", async (req: Request, res: Response) =>
 route.get("/users/:id", async (req: Request, res: Response) =>
   res.send(await userController.findOne(req.params)),
 );
-route.put("/users/:id", async (req: Request, res: Response) =>
-  res.send(await userController.update({ id: req.params.id, body: req.body })),
-);
+route.patch("/users/:id", async (req: Request, res: Response) => {
+  res.send(await userController.update({ id: req.params.id, body: req.body }));
+});
 route.delete("/users/:id", async (req: Request, res: Response) =>
   res.send(await userController.delete(req.params.id)),
 );
