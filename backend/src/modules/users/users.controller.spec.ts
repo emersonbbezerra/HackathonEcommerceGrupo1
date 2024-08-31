@@ -206,4 +206,29 @@ describe("UserController", () => {
       expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
+
+  describe("Delete user", () => {
+    const id = "user-id";
+
+    it("Should successfully delete a user", async () => {
+      usersServiceMock.delete.mockResolvedValueOnce(true);
+
+      const resp = await userController.delete(id);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(
+        new ServerResponse(202, "Successfully update user", true),
+      );
+    });
+
+    it("Should return ServerResponse with error when delete fails", async () => {
+      const errorMessage = "Deletion failed";
+      usersServiceMock.delete.mockRejectedValueOnce(new Error(errorMessage));
+
+      const resp = await userController.delete(id);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
+    });
+  });
 });
