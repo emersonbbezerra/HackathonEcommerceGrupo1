@@ -20,7 +20,7 @@ model User {
   email      String  @unique
   image      String?
   password   String
-  phone      Int     @unique
+  phone      String
   role       Role    @default(USER)
 
   sessions Session[]
