@@ -173,4 +173,34 @@ describe("UserService", () => {
       expect(result).toBe(true);
     });
   });
+
+  describe("Delete user", () => {
+    const id = "user-id";
+
+    it("Should return ServerError if user does not exist", async () => {
+      jest.spyOn(userService, "getByUnique").mockResolvedValue(null);
+
+      const result = await userService.delete(id);
+      expect(result).toBeInstanceOf(ServerError);
+      expect(result).toEqual(new ServerError("User not exist."));
+    });
+
+    it("Should return true if user is deleted successfully", async () => {
+      jest.spyOn(userService, "getByUnique").mockResolvedValue({
+        id,
+        first_name: "existing_fname",
+        last_name: "existing_lname",
+        email: "existing@example.com",
+        image: null,
+        phone: 987654321,
+        role: "USER",
+        password: "existing_password",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      const result = await userService.delete(id);
+      expect(result).toBe(true);
+    });
+  });
 });
