@@ -1,7 +1,13 @@
 import { ServerResponse } from "@/common/constants";
 import { ZodValidateError } from "@/common/errors/zod-validate-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
-import { CreateUserType } from "./dtos/user.dto";
+import { ZodError } from "zod";
+import {
+  CreateUserDTO,
+  CreateUserType,
+  UpdateUserDTO,
+  UpdateUserType,
+} from "./dtos/user.dto";
 import { UserSchema } from "./entities/user";
 import { IUserController, UserController } from "./users.controller";
 import { UsersService } from "./users.service";
@@ -64,7 +70,7 @@ describe("UserController", () => {
       const resp = await userController.findAll();
 
       expect(resp).toBeInstanceOf(ServerResponse);
-      expect(resp).toEqual(new ServerResponse(400, errorMessage));
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
 
@@ -79,11 +85,18 @@ describe("UserController", () => {
     };
 
     it("Should return ZodValidateError", async () => {
+      const zodError = new ZodError([]);
+      jest.spyOn(CreateUserDTO, "parse").mockImplementationOnce(() => {
+        throw zodError;
+      });
+
       const resp = await userController.create({
         ...httpRequest,
         first_name: "",
       });
+
       expect(resp).toBeInstanceOf(ZodValidateError);
+      expect((resp as ZodValidateError).errors).toEqual(zodError.errors);
     });
 
     it("Should successfully create a user", async () => {
@@ -144,7 +157,53 @@ describe("UserController", () => {
       const resp = await userController.findOne({});
 
       expect(resp).toBeInstanceOf(ServerResponse);
-      expect(resp).toEqual(new ServerResponse(400, errorMessage));
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
+    });
+  });
+
+  describe("Update user", () => {
+    const id = "user-id";
+    const httpRequest: UpdateUserType = {
+      first_name: "updated_fname",
+      last_name: "updated_lname",
+      email: "updated@email.com",
+      phone: 987654321,
+    };
+
+    it("Should successfully update a user", async () => {
+      usersServiceMock.update.mockResolvedValueOnce(true);
+
+      const resp = await userController.update(id, httpRequest);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(
+        new ServerResponse(202, "Successfully update user", true),
+      );
+    });
+
+    it("Should return ZodValidateError when validation fails", async () => {
+      const zodError = new ZodError([]);
+      jest.spyOn(UpdateUserDTO, "parse").mockImplementationOnce(() => {
+        throw zodError;
+      });
+
+      const resp = await userController.update(id, {
+        ...httpRequest,
+        email: "",
+      });
+
+      expect(resp).toBeInstanceOf(ZodValidateError);
+      expect((resp as ZodValidateError).errors).toEqual(zodError.errors);
+    });
+
+    it("Should return ServerResponse with error when update fails", async () => {
+      const errorMessage = "Update failed";
+      usersServiceMock.update.mockRejectedValueOnce(new Error(errorMessage));
+
+      const resp = await userController.update(id, httpRequest);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
 });
