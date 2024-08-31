@@ -5,7 +5,7 @@ const Product = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   image: z.string().url().nullable(),
-  price: z.number(),
+  price: z.number().positive(),
   category: z.string().min(1),
   created_at: z.date(),
   updated_at: z.date(),
