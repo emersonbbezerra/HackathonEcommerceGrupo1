@@ -1,4 +1,5 @@
 import { ServerResponse } from "@/common/constants";
+import { ServerError } from "@/common/errors/server-error";
 import { ZodValidateError } from "@/common/errors/zod-validate-error";
 import { ZodError } from "zod";
 import {
@@ -18,6 +19,7 @@ export interface IUserController {
     id: string,
     body: UpdateUserType,
   ): Promise<ServerResponse<any> | ZodValidateError>;
+  delete(id: string): Promise<ServerResponse<boolean | ServerError>>;
 }
 
 class UserController implements IUserController {
@@ -75,6 +77,15 @@ class UserController implements IUserController {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
+      return new ServerResponse(500, error.message);
+    }
+  }
+
+  async delete(id: string): Promise<ServerResponse<boolean | ServerError>> {
+    try {
+      const result = await this.usersService.delete(id);
+      return new ServerResponse(202, "Successfully update user", result);
+    } catch (error: any) {
       return new ServerResponse(500, error.message);
     }
   }
