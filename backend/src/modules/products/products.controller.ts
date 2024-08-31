@@ -21,15 +21,17 @@ class ProductController implements IProductController {
   ): Promise<ServerResponse<any> | ZodValidateError> {
     try {
       const validatedFields = CreateProductDTO.parse(body);
-      if (!validatedFields) throw new Error(validatedFields);
 
       const result = await this.productsService.create(validatedFields);
-      return new ServerResponse(201, "Successfully create product", result);
+      return new ServerResponse(201, "Successfully created product", result);
     } catch (error: any) {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
-      return new ServerResponse(400, error.message);
+      return new ServerResponse(
+        400,
+        `Error creating product: ${error.message}`,
+      );
     }
   }
 }
