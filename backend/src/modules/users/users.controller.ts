@@ -8,6 +8,7 @@ import { UsersService } from "./users.service";
 export interface IUserController {
   create(body: CreateUserType): Promise<ServerResponse<any> | ZodValidateError>;
   findAll(): Promise<ServerResponse<UserSchema[] | null>>;
+  findOne(params): Promise<ServerResponse<UserSchema | null>>;
 }
 
 class UserController implements IUserController {
@@ -38,6 +39,15 @@ class UserController implements IUserController {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
+      return new ServerResponse(400, error.message);
+    }
+  }
+
+  async findOne(params): Promise<ServerResponse<UserSchema | null>> {
+    try {
+      const result = await this.usersService.getByUnique(params);
+      return new ServerResponse(200, "Successfully find user by id", result);
+    } catch (error: any) {
       return new ServerResponse(400, error.message);
     }
   }
