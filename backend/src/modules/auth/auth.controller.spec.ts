@@ -50,4 +50,29 @@ describe("AuthController", () => {
       );
     });
   });
+
+  describe("Logout user", () => {
+    it("Should log out the user successfully", async () => {
+      jest.spyOn(authServiceMock, "logout").mockResolvedValue(true);
+
+      const result = await authController.logout(
+        "d426bcf6-8536-41f3-91ba-c39c581554e2",
+      );
+      expect(result).toEqual(
+        new ServerResponse(200, "Successfully logout", true),
+      );
+    });
+
+    it("Should return an error if logout fails", async () => {
+      const errorMessage = "Logout failed";
+      jest
+        .spyOn(authServiceMock, "logout")
+        .mockRejectedValue(new Error(errorMessage));
+
+      const result = await authController.logout(
+        "d426bcf6-8536-41f3-91ba-c39c581554e2",
+      );
+      expect(result).toEqual(new ServerResponse(500, errorMessage));
+    });
+  });
 });
