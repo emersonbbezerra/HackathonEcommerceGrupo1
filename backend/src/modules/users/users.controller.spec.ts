@@ -108,4 +108,43 @@ describe("UserController", () => {
       expect(resp).toBeInstanceOf(ServerResponse);
     });
   });
+
+  describe("findOne user", () => {
+    it("Should successfully find one user", async () => {
+      const usersData: UserSchema = {
+        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+        first_name: "any_fname",
+        last_name: "any_lname",
+        email: "any@email.com",
+        image: null,
+        password: "hash",
+        phone: 123456789,
+        role: "USER",
+        createdAt: new Date("2024-08-30T19:30:57.510Z"),
+        updatedAt: new Date("2024-08-30T19:30:57.510Z"),
+      };
+      usersServiceMock.getByUnique.mockResolvedValueOnce(usersData);
+
+      const resp = await userController.findOne({
+        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+      });
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(
+        new ServerResponse(200, "Successfully find user by id", usersData),
+      );
+    });
+
+    it("Should return ServerResponse with error when findOne fail", async () => {
+      const errorMessage = "Failed to find user";
+      usersServiceMock.getByUnique.mockRejectedValueOnce(
+        new Error(errorMessage),
+      );
+
+      const resp = await userController.findOne({});
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(new ServerResponse(400, errorMessage));
+    });
+  });
 });
