@@ -47,8 +47,6 @@ class ProductsService implements IProductsService {
         data: data,
       });
 
-      if (!result) throw new Error("Failed to create product");
-
       return result;
     } catch (error) {
       return new ServerError();
@@ -80,6 +78,7 @@ class ProductsService implements IProductsService {
 
       return result;
     } catch (error) {
+      // Log error if necessary
       return null;
     }
   }
@@ -91,6 +90,7 @@ class ProductsService implements IProductsService {
       });
       return true;
     } catch (error) {
+      // Log error if necessary
       return false;
     }
   }
