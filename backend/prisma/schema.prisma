@@ -47,3 +47,16 @@ model Session {
   @@unique([userId, token])
   @@map("sessions")
 }
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  image       String?
+  price       Float
+  category    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("products")
+}
