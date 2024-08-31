@@ -1,6 +1,7 @@
 import { ServerError } from "@/common/errors/server-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
 import { Prisma } from "@/config/database/prisma";
+import * as bcrypt from "bcrypt";
 import { CreateUserType, UpdateUserType } from "./dtos/user.dto";
 import { UserSchema } from "./entities/user";
 
@@ -44,16 +45,21 @@ class UsersService implements IUsersService {
     ]);
     if (emailExist || phoneExist) throw new Error("User already exist.");
 
-    const { first_name, last_name, email, phone, password, confirmPassword } =
-      data;
+    const { password, confirmPassword, ...rest } = data;
 
     if (password !== confirmPassword) return new ServerError();
 
-    const result = await this.prisma.user.create({
-      data: { first_name, last_name, email, phone, password: "hash" },
-    });
+    const passwordHash = await bcrypt.hash(data.password, 12);
 
+    const result = await this.prisma.user.create({
+      data: {
+        ...rest,
+        password: passwordHash,
+      },
+    });
     if (!result) return new ServerError();
+
+    // TODO: logica de login aqui
 
     return { accessToken: "token" };
   }
