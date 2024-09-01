@@ -35,7 +35,7 @@ describe("UserController", () => {
           email: "any@email.com",
           image: null,
           password: "hash",
-          phone: 123456789,
+          phone: "123456789",
           role: "USER",
           createdAt: new Date("2024-08-30T19:30:57.510Z"),
           updatedAt: new Date("2024-08-30T19:30:57.510Z"),
@@ -47,7 +47,7 @@ describe("UserController", () => {
           email: "other@email.com",
           image: null,
           password: "hash",
-          phone: 9876543210,
+          phone: "987654321",
           role: "USER",
           createdAt: new Date("2024-08-28T19:30:57.510Z"),
           updatedAt: new Date("2024-08-28T19:30:57.510Z"),
@@ -79,7 +79,7 @@ describe("UserController", () => {
       first_name: "any_fname",
       last_name: "any_lname",
       email: "any@email.com",
-      phone: 123456789,
+      phone: "123456789",
       password: "any_password",
       confirmPassword: "any_password",
     };
@@ -131,7 +131,7 @@ describe("UserController", () => {
         email: "any@email.com",
         image: null,
         password: "hash",
-        phone: 123456789,
+        phone: "123456789",
         role: "USER",
         createdAt: new Date("2024-08-30T19:30:57.510Z"),
         updatedAt: new Date("2024-08-30T19:30:57.510Z"),
@@ -167,7 +167,7 @@ describe("UserController", () => {
       first_name: "updated_fname",
       last_name: "updated_lname",
       email: "updated@email.com",
-      phone: 987654321,
+      phone: "987654321",
     };
 
     it("Should successfully update a user", async () => {

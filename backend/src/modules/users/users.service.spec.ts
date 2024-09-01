@@ -1,5 +1,6 @@
 import { ServerError } from "@/common/errors/server-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
+import { AuthService } from "../auth/auth.service";
 import { CreateUserType, UpdateUserType } from "./dtos/user.dto";
 import { UsersService } from "./users.service";
 
@@ -10,7 +11,7 @@ describe("UserService", () => {
     first_name: "any_fname",
     last_name: "any_lname",
     email: "any@email.com",
-    phone: 123456789,
+    phone: "123456789",
     password: "any_password",
     confirmPassword: "any_password",
   };
@@ -28,7 +29,7 @@ describe("UserService", () => {
         email: "any@email.com",
         image: null,
         password: "hash",
-        phone: 123456789,
+        phone: "123456789",
         role: "USER",
         createdAt: new Date("2024-08-30T19:30:57.510Z"),
         updatedAt: new Date("2024-08-30T19:30:57.510Z"),
@@ -36,6 +37,42 @@ describe("UserService", () => {
 
       await expect(userService.create(httpRequest)).rejects.toThrow(
         "User already exist.",
+      );
+    });
+
+    it("Should throw an error if passwords do not match", async () => {
+      prismaMock.user.findFirst.mockResolvedValue(null);
+
+      await expect(
+        userService.create({
+          ...httpRequest,
+          password: "password1",
+          confirmPassword: "password2",
+        }),
+      ).rejects.toThrow(ServerError);
+    });
+
+    it("Should throw an error if login fails", async () => {
+      prismaMock.user.findFirst.mockResolvedValue(null);
+      prismaMock.user.create.mockResolvedValue({
+        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+        first_name: "any_fname",
+        last_name: "any_lname",
+        email: "any@email.com",
+        image: null,
+        password: "hash",
+        phone: "123456789",
+        role: "USER",
+        createdAt: new Date("2024-08-30T19:30:57.510Z"),
+        updatedAt: new Date("2024-08-30T19:30:57.510Z"),
+      });
+
+      jest
+        .spyOn(AuthService.prototype, "login")
+        .mockResolvedValue(new ServerError("Login error"));
+
+      await expect(userService.create(httpRequest)).rejects.toThrow(
+        "Login error",
       );
     });
 
@@ -48,11 +85,15 @@ describe("UserService", () => {
         email: "any@email.com",
         image: null,
         password: "hash",
-        phone: 123456789,
+        phone: "123456789",
         role: "USER",
         createdAt: new Date("2024-08-30T19:30:57.510Z"),
         updatedAt: new Date("2024-08-30T19:30:57.510Z"),
       });
+
+      jest
+        .spyOn(AuthService.prototype, "login")
+        .mockResolvedValue({ accessToken: "token" });
 
       const result = await userService.create(httpRequest);
       expect(result).toEqual({ accessToken: "token" });
@@ -79,7 +120,7 @@ describe("UserService", () => {
         email: "any@email.com",
         image: null,
         password: "hash",
-        phone: 123456789,
+        phone: "123456789",
         role: "USER",
         createdAt: new Date("2024-08-30T19:30:57.510Z"),
         updatedAt: new Date("2024-08-30T19:30:57.510Z"),
@@ -96,7 +137,7 @@ describe("UserService", () => {
         email: "any@email.com",
         image: null,
         password: "hash",
-        phone: 123456789,
+        phone: "123456789",
         role: "USER",
         createdAt: new Date("2024-08-30T19:30:57.510Z"),
         updatedAt: new Date("2024-08-30T19:30:57.510Z"),
@@ -110,15 +151,16 @@ describe("UserService", () => {
       first_name: "updated_fame",
       last_name: "updated_lname",
       email: "updated@example.com",
-      phone: 123456789,
+      phone: "123456789",
       password: "new_password",
     };
 
     it("Should throw an error if user does not exist", async () => {
       jest.spyOn(userService, "getByUnique").mockResolvedValue(null);
 
-      const result = await userService.update({ id, data: updateData });
-      expect(result).toEqual(new ServerError("User not exist."));
+      await expect(
+        userService.update({ id, data: updateData }),
+      ).rejects.toThrow("User not exist.");
     });
 
     it("Should return ServerError if update fails", async () => {
@@ -128,7 +170,7 @@ describe("UserService", () => {
         last_name: "existing_lname",
         email: "existing@example.com",
         image: null,
-        phone: 987654321,
+        phone: "987654321",
         role: "USER",
         password: "existing_password",
         createdAt: new Date(),
@@ -137,10 +179,9 @@ describe("UserService", () => {
 
       jest.spyOn(userService.prisma.user, "update").mockResolvedValue(null);
 
-      const result = await userService.update({ id, data: updateData });
-
-      expect(result).toBeInstanceOf(ServerError);
-      expect(result).toEqual(new ServerError("Update failed"));
+      await expect(
+        userService.update({ id, data: updateData }),
+      ).rejects.toThrow("Update failed");
     });
 
     it("Should update a user successfully", async () => {
@@ -150,7 +191,7 @@ describe("UserService", () => {
         last_name: "existing_lname",
         email: "existing@example.com",
         image: null,
-        phone: 987654321,
+        phone: "987654321",
         role: "USER",
         password: "existing_password",
         createdAt: new Date(),
@@ -175,32 +216,32 @@ describe("UserService", () => {
   });
 
   describe("Delete user", () => {
-    const id = "user-id";
-
-    it("Should return ServerError if user does not exist", async () => {
-      jest.spyOn(userService, "getByUnique").mockResolvedValue(null);
-
-      const result = await userService.delete(id);
-      expect(result).toBeInstanceOf(ServerError);
-      expect(result).toEqual(new ServerError("User not exist."));
-    });
-
-    it("Should return true if user is deleted successfully", async () => {
-      jest.spyOn(userService, "getByUnique").mockResolvedValue({
-        id,
-        first_name: "existing_fname",
-        last_name: "existing_lname",
-        email: "existing@example.com",
+    it("Should delete the user successfully", async () => {
+      prismaMock.user.delete.mockResolvedValue({
+        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+        first_name: "any_fname",
+        last_name: "any_lname",
+        email: "any@email.com",
         image: null,
-        phone: 987654321,
+        password: "hash",
+        phone: "123456789",
         role: "USER",
-        password: "existing_password",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date("2024-08-30T19:30:57.510Z"),
+        updatedAt: new Date("2024-08-30T19:30:57.510Z"),
       });
 
-      const result = await userService.delete(id);
+      const result = await userService.delete(
+        "d426bcf6-8536-41f3-91ba-c39c581554e2",
+      );
       expect(result).toBe(true);
+    });
+
+    it("Should throw an error if user does not exist", async () => {
+      prismaMock.user.delete.mockResolvedValue(null);
+
+      await expect(userService.delete("non-existing-id")).rejects.toThrow(
+        "User not exist.",
+      );
     });
   });
 });
