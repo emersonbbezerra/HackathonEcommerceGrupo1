@@ -4,8 +4,24 @@ import { ProductController } from "./products.controller";
 const route = Router();
 const productController = new ProductController();
 
-route.post("/product", async (req: Request, res: Response) =>
+route.get("/products", async (_: Request, res: Response) =>
+  res.send(await productController.findAll()),
+);
+
+route.post("/products", async (req: Request, res: Response) =>
   res.send(await productController.create(req.body)),
 );
 
-export { route as UserRoute };
+route.get("/products/:id", async (req: Request, res: Response) =>
+  res.send(await productController.findOne({ id: req.params.id })),
+);
+
+route.patch("/products/:id", async (req: Request, res: Response) =>
+  res.send(await productController.update(req.params.id, req.body)),
+);
+
+route.delete("/products/:id", async (req: Request, res: Response) =>
+  res.send(await productController.delete(req.params.id)),
+);
+
+export { route as ProductRoute };
