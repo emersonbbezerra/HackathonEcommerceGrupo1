@@ -14,8 +14,8 @@ export interface IProductsService {
     field: string;
     value: string | number;
   }): Promise<ProductSchema | null>;
-  update(id: string, data: UpdateProductType): Promise<ProductSchema | null>;
-  delete(id: string): Promise<boolean>;
+  update(id: string, data: UpdateProductType): Promise<boolean | ServerError>;
+  delete(id: string): Promise<boolean | ServerError>;
 }
 
 class ProductsService implements IProductsService {
@@ -30,27 +30,22 @@ class ProductsService implements IProductsService {
   }
 
   async create(data: CreateProductType): Promise<ProductSchema | ServerError> {
-    try {
-      // Check if a product with the same name or category already exists
-      const existingProduct = await this.prisma.product.findFirst({
-        where: {
-          OR: [{ name: data.name }, { category: data.category }],
-        },
-      });
+    const productExist = await this.prisma.product.findFirst({
+      where: {
+        OR: [{ name: data.name }, { category: data.category }],
+      },
+    });
 
-      if (existingProduct) {
-        throw new Error("Product already exists.");
-      }
-
-      // Create new product
-      const result = await this.prisma.product.create({
-        data: data,
-      });
-
-      return result;
-    } catch (error) {
-      return new ServerError();
+    if (productExist) {
+      throw new Error("Product already exists.");
     }
+
+    const result = await this.prisma.product.create({
+      data: data,
+    });
+    if (!result) throw new ServerError();
+
+    return result;
   }
 
   async getByUnique({
@@ -60,39 +55,40 @@ class ProductsService implements IProductsService {
     field: string;
     value: string | number;
   }): Promise<ProductSchema | null> {
-    return this.prisma.product.findFirst({
+    const product = await this.prisma.product.findFirst({
       where: { [field]: value },
     });
+
+    if (!product) return null;
+
+    return product;
   }
 
   async update(
     id: string,
     data: UpdateProductType,
-  ): Promise<ProductSchema | null> {
-    try {
-      // Find and update the product
-      const result = await this.prisma.product.update({
-        where: { id },
-        data,
-      });
+  ): Promise<boolean | ServerError> {
+    const product = await this.getByUnique({ field: "id", value: id });
 
-      return result;
-    } catch (error) {
-      // Log error if necessary
-      return null;
+    if (!product) {
+      throw new ServerError("Product not exist.");
     }
+
+    const updatedProduct = await this.prisma.product.update({
+      where: { id },
+      data,
+    });
+    if (!updatedProduct) throw new ServerError("Update failed");
+
+    return true;
   }
 
-  async delete(id: string): Promise<boolean> {
-    try {
-      await this.prisma.product.delete({
-        where: { id },
-      });
-      return true;
-    } catch (error) {
-      // Log error if necessary
-      return false;
-    }
+  async delete(id: string): Promise<boolean | ServerError> {
+    const product = await this.prisma.product.delete({
+      where: { id },
+    });
+    if (!product) throw new ServerError("Product not exist.");
+    return true;
   }
 }
 
