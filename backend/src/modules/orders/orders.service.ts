@@ -1,12 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { ServerError } from "@/common/errors/server-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
 import { CreateOrderType, UpdateOrderType } from "./dtos/order.dto";
 import { OrderSchema } from "./entities/order";
 
 export interface IOrdersService {
   findAll(): Promise<OrderSchema[]>;
-  create(data: CreateOrderType): Promise<OrderSchema | ServerError>;
+  create(data: CreateOrderType): Promise<OrderSchema>;
   getByUnique({
     field,
     value,
@@ -29,32 +28,28 @@ class OrdersService implements IOrdersService {
     return this.prisma.order.findMany({ include: { items: true } });
   }
 
-  async create(data: CreateOrderType): Promise<OrderSchema | ServerError> {
-    try {
-      const order = await this.prisma.order.create({
-        data: {
-          customerName: data.customerName,
-          customerPhone: data.customerPhone,
-          customerAddress: data.customerAddress,
-          items: {
-            create: data.items.map((item) => ({
-              product: { connect: { id: item.product } },
-              quantity: item.quantity,
-              price: item.price,
-            })),
-          },
-          totalPrice: data.totalPrice,
-          orderStatus: data.orderStatus,
-          orderDate: data.orderDate,
-          paymentMethod: data.paymentMethod,
+  async create(data: CreateOrderType): Promise<OrderSchema> {
+    const order = await this.prisma.order.create({
+      data: {
+        customerName: data.customerName,
+        customerPhone: data.customerPhone,
+        customerAddress: data.customerAddress,
+        items: {
+          create: data.items.map((item) => ({
+            product: { connect: { id: item.product } },
+            quantity: item.quantity,
+            price: item.price,
+          })),
         },
-        include: { items: true },
-      });
+        totalPrice: data.totalPrice,
+        orderStatus: data.orderStatus,
+        orderDate: data.orderDate,
+        paymentMethod: data.paymentMethod,
+      },
+      include: { items: true },
+    });
 
-      return order;
-    } catch (error) {
-      return new ServerError();
-    }
+    return order;
   }
 
   async getByUnique({
@@ -71,38 +66,30 @@ class OrdersService implements IOrdersService {
   }
 
   async update(id: string, data: UpdateOrderType): Promise<OrderSchema | null> {
-    try {
-      const order = await this.prisma.order.update({
-        where: { id },
-        data: {
-          ...data,
-          items: data.items
-            ? {
-                updateMany: data.items.map((item) => ({
-                  where: { productId: item.product },
-                  data: { quantity: item.quantity, price: item.price },
-                })),
-              }
-            : undefined,
-        },
-        include: { items: true },
-      });
+    const order = await this.prisma.order.update({
+      where: { id },
+      data: {
+        ...data,
+        items: data.items
+          ? {
+              updateMany: data.items.map((item) => ({
+                where: { productId: item.product },
+                data: { quantity: item.quantity, price: item.price },
+              })),
+            }
+          : undefined,
+      },
+      include: { items: true },
+    });
 
-      return order;
-    } catch (error) {
-      return null;
-    }
+    return order;
   }
 
   async delete(id: string): Promise<boolean> {
-    try {
-      await this.prisma.order.delete({
-        where: { id },
-      });
-      return true;
-    } catch (error) {
-      return false;
-    }
+    await this.prisma.order.delete({
+      where: { id },
+    });
+    return true;
   }
 }
 
