@@ -9,6 +9,7 @@ import { LoginSchema } from "./dtos/auth.dto";
 
 export interface IAuthService {
   login(data: LoginSchema): Promise<{ accessToken: string } | ServerError>;
+  logout(id: string): Promise<boolean>;
   jwtSessionToken(userId: string): Promise<{ accessToken: string }>;
   generateToken(payload: any): Promise<string>;
 }
@@ -30,6 +31,21 @@ class AuthService implements IAuthService {
     }
 
     return this.jwtSessionToken(user.id);
+  }
+
+  async logout(id: string): Promise<boolean> {
+    await this.prisma.session.updateMany({
+      where: {
+        user: { id },
+        active: true,
+      },
+      data: {
+        token: null,
+        active: false,
+      },
+    });
+
+    return true;
   }
 
   private async findUserByEmail(email: string) {
