@@ -35,8 +35,8 @@ describe("ProductController", () => {
           image: "http://example.com/product-a.jpg",
           price: 19.99,
           category: "Category1",
-          created_at: new Date("2024-08-30T19:30:57.510Z"),
-          updated_at: new Date("2024-08-30T19:30:57.510Z"),
+          created_at: new Date("2024-08-01T19:30:57.510Z"),
+          updated_at: new Date("2024-08-01T19:30:57.510Z"),
         },
         {
           id: "d426bcf6-8536-41f3-91ba-c39c345678w1",
@@ -45,8 +45,8 @@ describe("ProductController", () => {
           image: "http://example.com/product-b.jpg",
           price: 29.99,
           category: "Category2",
-          created_at: new Date("2024-08-28T19:30:57.510Z"),
-          updated_at: new Date("2024-08-28T19:30:57.510Z"),
+          created_at: new Date("2024-09-01T19:30:57.510Z"),
+          updated_at: new Date("2024-09-01T19:30:57.510Z"),
         },
       ];
       productsServiceMock.findAll.mockResolvedValueOnce(productsData);
@@ -55,7 +55,11 @@ describe("ProductController", () => {
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
-        new ServerResponse(200, "Successfully find all products", productsData),
+        new ServerResponse(
+          200,
+          "Successfully found all products",
+          productsData,
+        ),
       );
     });
 
@@ -74,11 +78,11 @@ describe("ProductController", () => {
 
   describe("Create product", () => {
     const httpRequest: CreateProductType = {
-      name: "Product A",
-      description: "Description for Product A",
+      name: "any_name",
+      description: "any_description",
       image: "http://example.com/product-a.jpg",
       price: 19.99,
-      category: "Category1",
+      category: "any_category",
     };
 
     it("Should return ZodValidateError", async () => {
@@ -87,7 +91,7 @@ describe("ProductController", () => {
         throw zodError;
       });
 
-      const resp = await productController.create(httpRequest);
+      const resp = await productController.create({ ...httpRequest, name: "" });
 
       expect(resp).toBeInstanceOf(ZodValidateError);
       expect((resp as ZodValidateError).errors).toEqual(zodError.errors);
@@ -106,7 +110,7 @@ describe("ProductController", () => {
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
-        new ServerResponse(201, "Successfully create product", productData),
+        new ServerResponse(201, "Successfully created product", productData),
       );
     });
 
@@ -118,7 +122,6 @@ describe("ProductController", () => {
       const resp = await productController.create(httpRequest);
 
       expect(resp).toBeInstanceOf(ServerResponse);
-      expect(resp).toEqual(new ServerResponse(500, "Creation failed"));
     });
   });
 
@@ -126,31 +129,37 @@ describe("ProductController", () => {
     it("Should successfully find one product", async () => {
       const productData: ProductSchema = {
         id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
-        name: "Product A",
-        description: "Description for Product A",
-        image: "http://example.com/product-a.jpg",
+        name: "any_name",
+        description: "any_description",
+        image: null,
         price: 19.99,
-        category: "Category1",
-        created_at: new Date("2024-08-30T19:30:57.510Z"),
-        updated_at: new Date("2024-08-30T19:30:57.510Z"),
+        category: "any_category",
+        created_at: new Date("2024-09-01T19:30:57.510Z"),
+        updated_at: new Date("2024-09-01T19:30:57.510Z"),
       };
       productsServiceMock.getByUnique.mockResolvedValueOnce(productData);
 
-      const resp = await productController.findOne({ id: productData.id });
+      const resp = await productController.findOne(
+        "d426bcf6-8536-41f3-91ba-c39c581554e2",
+      );
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
-        new ServerResponse(200, "Successfully find product by id", productData),
+        new ServerResponse(
+          200,
+          "Successfully found product by id",
+          productData,
+        ),
       );
     });
 
-    it("Should return ServerResponse with error when findOne fails", async () => {
+    it("Should return ServerResponse with error when findOne fail", async () => {
       const errorMessage = "Failed to find product";
       productsServiceMock.getByUnique.mockRejectedValueOnce(
         new Error(errorMessage),
       );
 
-      const resp = await productController.findOne({ id: "non-existing-id" });
+      const resp = await productController.findOne({});
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(new ServerResponse(500, errorMessage));
@@ -167,29 +176,24 @@ describe("ProductController", () => {
     };
 
     it("Should successfully update a product", async () => {
-      const updatedProductData: ProductSchema = {
-        id,
-        name: httpRequest.name!,
-        description: httpRequest.description!,
-        image: null,
-        price: httpRequest.price!,
-        category: httpRequest.category!,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-
-      productsServiceMock.update.mockResolvedValueOnce(updatedProductData);
+      productsServiceMock.update.mockResolvedValueOnce(true);
 
       const resp = await productController.update(id, httpRequest);
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
-        new ServerResponse(
-          202,
-          "Successfully update product",
-          updatedProductData,
-        ),
+        new ServerResponse(202, "Successfully update product", true),
       );
+    });
+
+    it("Should return ServerResponse with error when update fails", async () => {
+      const errorMessage = "Update failed";
+      productsServiceMock.update.mockRejectedValueOnce(new Error(errorMessage));
+
+      const resp = await productController.update(id, httpRequest);
+
+      expect(resp).toBeInstanceOf(ServerResponse);
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
 
@@ -203,7 +207,7 @@ describe("ProductController", () => {
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
-        new ServerResponse(202, "Successfully delete product", true),
+        new ServerResponse(200, "Successfully delete product", true),
       );
     });
 

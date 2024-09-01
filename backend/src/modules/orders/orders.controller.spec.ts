@@ -51,8 +51,10 @@ describe("OrderController", () => {
     });
 
     it("Should return ServerResponse with error when findAll fails", async () => {
-      const errorMessage = "Failed to find orders";
-      ordersServiceMock.findAll.mockRejectedValueOnce(new Error(errorMessage));
+      const errorMessage = "Error finding orders: Failed to find orders";
+      ordersServiceMock.findAll.mockRejectedValueOnce(
+        new Error("Failed to find orders"),
+      );
 
       const resp = await orderController.findAll();
 
@@ -138,6 +140,7 @@ describe("OrderController", () => {
     });
 
     it("Should return ServerResponse when order creation fails", async () => {
+      const errorMessage = "Error creating order: Creation failed";
       ordersServiceMock.create.mockRejectedValueOnce(
         new Error("Creation failed"),
       );
@@ -145,7 +148,7 @@ describe("OrderController", () => {
       const resp = await orderController.create(httpRequest);
 
       expect(resp).toBeInstanceOf(ServerResponse);
-      expect(resp).toEqual(new ServerResponse(500, "Creation failed"));
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
 
@@ -173,9 +176,9 @@ describe("OrderController", () => {
     });
 
     it("Should return ServerResponse with error when findOne fails", async () => {
-      const errorMessage = "Failed to find order";
+      const errorMessage = "Error finding order: Failed to find order";
       ordersServiceMock.getByUnique.mockRejectedValueOnce(
-        new Error(errorMessage),
+        new Error("Failed to find order"),
       );
 
       const resp = await orderController.findOne({ id: "non-existing-id" });
@@ -262,15 +265,16 @@ describe("OrderController", () => {
       );
     });
 
-    it("Should return ServerResponse when update fails", async () => {
+    it("Should return ServerResponse with error when update fails", async () => {
+      const errorMessage = "Error updating order: Failed to update order";
       ordersServiceMock.update.mockRejectedValueOnce(
-        new Error("Update failed"),
+        new Error("Failed to update order"),
       );
 
       const resp = await orderController.update(id, httpRequest);
 
       expect(resp).toBeInstanceOf(ServerResponse);
-      expect(resp).toEqual(new ServerResponse(404, "Order not found"));
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
 
@@ -278,6 +282,7 @@ describe("OrderController", () => {
     const id = "order-id";
 
     it("Should successfully delete an order", async () => {
+      // Ajustar a mockagem para retornar um valor booleano
       ordersServiceMock.delete.mockResolvedValueOnce(true);
 
       const resp = await orderController.delete(id);
@@ -288,13 +293,16 @@ describe("OrderController", () => {
       );
     });
 
-    it("Should return ServerResponse when delete fails", async () => {
-      ordersServiceMock.delete.mockResolvedValueOnce(false);
+    it("Should return ServerResponse with error when delete fails", async () => {
+      const errorMessage = "Error deleting order: Failed to delete order";
+      ordersServiceMock.delete.mockRejectedValueOnce(
+        new Error("Failed to delete order"),
+      );
 
-      const resp = await orderController.delete(id);
+      const resp = await orderController.delete("non-existing-id");
 
       expect(resp).toBeInstanceOf(ServerResponse);
-      expect(resp).toEqual(new ServerResponse(404, "Order not found"));
+      expect(resp).toEqual(new ServerResponse(500, errorMessage));
     });
   });
 });

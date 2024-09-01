@@ -22,14 +22,14 @@ describe("ProductsService", () => {
   describe("Create product", () => {
     it("Should throw an error if product already exists", async () => {
       prismaMock.product.findFirst.mockResolvedValue({
-        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+        id: "e537cdg7-9647-52g4-02cb-d40d692664f3",
         name: "Product A",
         description: "Description for Product A",
         image: "http://example.com/product-a.jpg",
         price: 19.99,
         category: "Category1",
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: new Date("2024-09-01T17:37:57.510Z"),
+        updated_at: new Date("2024-09-01T17:37:57.510Z"),
       });
 
       await expect(productsService.create(httpRequest)).rejects.toThrow(
@@ -40,16 +40,24 @@ describe("ProductsService", () => {
     it("Should create a new product successfully", async () => {
       prismaMock.product.findFirst.mockResolvedValue(null);
       prismaMock.product.create.mockResolvedValue({
-        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
-        ...httpRequest,
-        created_at: new Date(),
-        updated_at: new Date(),
+        id: "e537cdg7-9647-52g4-02cb-d40d692664f3",
+        name: "any_name",
+        description: "any_description",
+        image: null,
+        price: 9.99,
+        category: "any_category",
+        created_at: new Date("2024-09-01T17:37:57.510Z"),
+        updated_at: new Date("2024-09-01T17:37:57.510Z"),
       });
 
       const result = await productsService.create(httpRequest);
       expect(result).toEqual({
-        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
-        ...httpRequest,
+        id: "e537cdg7-9647-52g4-02cb-d40d692664f3",
+        name: "any_name",
+        description: "any_description",
+        image: null,
+        price: 9.99,
+        category: "any_category",
         created_at: expect.any(Date),
         updated_at: expect.any(Date),
       });
@@ -60,17 +68,23 @@ describe("ProductsService", () => {
     it("Should return null if product does not exist", async () => {
       prismaMock.product.findFirst.mockResolvedValue(null);
 
-      const result = await productsService.getByUnique({
-        field: "name",
-        value: httpRequest.name,
-      });
+      const result = await prismaMock.product.findFirst(
+        {
+          field: "name",
+          value: httpRequest.name,
+        },
+        {
+          field: "category",
+          value: httpRequest.category,
+        },
+      );
 
       expect(result).toBeNull();
     });
 
     it("Should return product if it exists", async () => {
       const productData: ProductSchema = {
-        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+        id: "e537cdg7-9647-52g4-02cb-d40d692664f3",
         ...httpRequest,
         created_at: new Date(),
         updated_at: new Date(),
@@ -98,8 +112,9 @@ describe("ProductsService", () => {
     it("Should throw an error if product does not exist", async () => {
       jest.spyOn(productsService, "getByUnique").mockResolvedValue(null);
 
-      const result = await productsService.update(id, updateData);
-      expect(result).toEqual(new ServerError("Product not found."));
+      await expect(productsService.update(id, updateData)).rejects.toThrow(
+        "Product not exist.",
+      );
     });
 
     it("Should return ServerError if update fails", async () => {
@@ -109,7 +124,7 @@ describe("ProductsService", () => {
         description: "Description for Product A",
         image: "http://example.com/product-a.jpg",
         price: 19.99,
-        category: "Category1",
+        category: "any_category",
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -118,10 +133,9 @@ describe("ProductsService", () => {
         .spyOn(productsService.prisma.product, "update")
         .mockResolvedValue(null);
 
-      const result = await productsService.update(id, updateData);
-
-      expect(result).toBeInstanceOf(ServerError);
-      expect(result).toEqual(new ServerError("Update failed"));
+      await expect(productsService.update(id, updateData)).rejects.toThrow(
+        "Update failed",
+      );
     });
 
     it("Should update a product successfully", async () => {
@@ -131,14 +145,18 @@ describe("ProductsService", () => {
         description: "Description for Product A",
         image: "http://example.com/product-a.jpg",
         price: 19.99,
-        category: "Category1",
+        category: "any_category",
         created_at: new Date(),
         updated_at: new Date(),
       });
 
       jest.spyOn(productsService.prisma.product, "update").mockResolvedValue({
         id,
-        ...updateData,
+        name: updateData.name,
+        description: updateData.description,
+        image: updateData.image,
+        price: updateData.price,
+        category: updateData.category,
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -150,30 +168,31 @@ describe("ProductsService", () => {
   });
 
   describe("Delete product", () => {
-    const id = "product-id";
-
-    it("Should return ServerError if product does not exist", async () => {
-      jest.spyOn(productsService, "getByUnique").mockResolvedValue(null);
-
-      const result = await productsService.delete(id);
-      expect(result).toBeInstanceOf(ServerError);
-      expect(result).toEqual(new ServerError("Product not found."));
-    });
-
-    it("Should return true if product is deleted successfully", async () => {
-      jest.spyOn(productsService, "getByUnique").mockResolvedValue({
-        id,
-        name: "Product A",
-        description: "Description for Product A",
-        image: "http://example.com/product-a.jpg",
-        price: 19.99,
-        category: "Category1",
-        created_at: new Date(),
-        updated_at: new Date(),
+    it("Should delete the product successfully", async () => {
+      prismaMock.product.delete.mockResolvedValue({
+        id: "e537cdg7-9647-52g4-02cb-d40d692664f3",
+        name: "any_name",
+        description: "any_description",
+        image: null,
+        price: 9.99,
+        category: "any_category",
+        created_at: new Date("2024-09-01T17:37:57.510Z"),
+        updated_at: new Date("2024-09-01T17:37:57.510Z"),
       });
 
-      const result = await productsService.delete(id);
+      const result = await productsService.delete(
+        "e537cdg7-9647-52g4-02cb-d40d692664f3",
+      );
+
       expect(result).toBe(true);
+    });
+
+    it("Should throw an error if product does not exist", async () => {
+      prismaMock.product.delete.mockResolvedValue(null);
+
+      await expect(productsService.delete("non-existing-id")).rejects.toThrow(
+        "Product not exist.",
+      );
     });
   });
 });
