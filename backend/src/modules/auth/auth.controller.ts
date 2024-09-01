@@ -34,7 +34,7 @@ class AuthController implements IAuthController {
 
   async logout(userId: string): Promise<ServerResponse<boolean>> {
     try {
-      const result = await this.authService.logout({ id: userId });
+      const result = await this.authService.logout(userId);
       return new ServerResponse(200, "Successfully logout", result);
     } catch (error: any) {
       return new ServerResponse(500, error.message);
