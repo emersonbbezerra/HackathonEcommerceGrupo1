@@ -6,7 +6,7 @@ import { Router } from "express";
 
 const routes = Router();
 
-routes.use("/api", UserRoute);
+routes.use("/api/users/", UserRoute);
 routes.use("/api/auth", AuthRoutes);
 routes.use("/api", ProductRoute);
 routes.use("/api", OrderRoute);
