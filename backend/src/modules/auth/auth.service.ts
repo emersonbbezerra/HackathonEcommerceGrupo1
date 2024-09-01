@@ -16,9 +16,8 @@ export interface IAuthService {
 
 class AuthService implements IAuthService {
   prisma: Prisma | typeof prismaMock;
-
   constructor(prisma?: typeof prismaMock) {
-    this.prisma = prisma || prismaMock;
+    this.prisma = prisma || new Prisma();
   }
 
   async login(
