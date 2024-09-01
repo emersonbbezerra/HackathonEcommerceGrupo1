@@ -64,6 +64,29 @@ describe("AuthService", () => {
     });
   });
 
+  describe("logout", () => {
+    it("should set active sessions to inactive and remove tokens", async () => {
+      const userId = "test-user-id";
+
+      prismaMock.session.updateMany.mockResolvedValue({ count: 1 });
+
+      const result = await authService.logout(userId);
+
+      expect(prismaMock.session.updateMany).toHaveBeenCalledWith({
+        where: {
+          user: { id: userId },
+          active: true,
+        },
+        data: {
+          token: null,
+          active: false,
+        },
+      });
+
+      expect(result).toBe(true);
+    });
+  });
+
   describe("jwtSessionToken", () => {
     it("should generate JWT session token for the user", async () => {
       const userId = "user-id";
