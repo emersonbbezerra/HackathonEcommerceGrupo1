@@ -2,6 +2,7 @@ import { ServerError } from "@/common/errors/server-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
 import { Prisma } from "@/config/database/prisma";
 import * as bcrypt from "bcrypt";
+import { AuthService } from "../auth/auth.service";
 import { CreateUserType, UpdateUserType } from "./dtos/user.dto";
 import { UserSchema } from "./entities/user";
 
@@ -59,9 +60,14 @@ class UsersService implements IUsersService {
     });
     if (!result) throw new ServerError();
 
-    // TODO: logica de login aqui
+    const login = await new AuthService().login({
+      email: data.email,
+      password: data.password,
+    });
 
-    return { accessToken: "token" };
+    if (login instanceof ServerError) throw new ServerError("Login error");
+
+    return login;
   }
 
   async getByUnique({
