@@ -37,18 +37,12 @@ class OrderController implements IOrderController {
     try {
       const validatedFields = CreateOrderDTO.parse(body);
       const result = await this.ordersService.create(validatedFields);
-      if (result instanceof Error) {
-        return new ServerResponse(
-          500,
-          `Error creating order: ${result.message}`,
-        );
-      }
       return new ServerResponse(201, "Successfully created order", result);
     } catch (error: any) {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
-      return new ServerResponse(400, `Error creating order: ${error.message}`);
+      return new ServerResponse(500, `Error creating order: ${error.message}`);
     }
   }
 
@@ -93,7 +87,7 @@ class OrderController implements IOrderController {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
-      return new ServerResponse(400, `Error updating order: ${error.message}`);
+      return new ServerResponse(500, `Error updating order: ${error.message}`);
     }
   }
 
