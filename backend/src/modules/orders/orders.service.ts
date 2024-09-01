@@ -38,7 +38,7 @@ class OrdersService implements IOrdersService {
           customerAddress: data.customerAddress,
           items: {
             create: data.items.map((item) => ({
-              product: { connect: { id: item.productId } },
+              product: { connect: { id: item.product } },
               quantity: item.quantity,
               price: item.price,
             })),
