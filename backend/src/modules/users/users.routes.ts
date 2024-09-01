@@ -4,19 +4,19 @@ import { UserController } from "./users.controller";
 const route = Router();
 const userController = new UserController();
 
-route.get("/users", async (_: Request, res: Response) =>
+route.get("", async (_: Request, res: Response) =>
   res.send(await userController.findAll()),
 );
-route.post("/users", async (req: Request, res: Response) =>
+route.post("", async (req: Request, res: Response) =>
   res.send(await userController.create(req.body)),
 );
-route.get("/users/:id", async (req: Request, res: Response) =>
+route.get(":id", async (req: Request, res: Response) =>
   res.send(await userController.findOne(req.params)),
 );
-route.patch("/users/:id", async (req: Request, res: Response) => {
+route.patch(":id", async (req: Request, res: Response) => {
   res.send(await userController.update({ id: req.params.id, body: req.body }));
 });
-route.delete("/users/:id", async (req: Request, res: Response) =>
+route.delete(":id", async (req: Request, res: Response) =>
   res.send(await userController.delete(req.params.id)),
 );
 
