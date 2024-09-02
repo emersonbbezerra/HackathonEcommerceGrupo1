@@ -28,7 +28,7 @@ route.delete(
   "",
   authMiddleware,
   async (req: AuthenticatedRequest, res: Response) =>
-    res.send(await userController.delete(req.user.id)),
+    res.send(await userController.delete({ id: req.user.id, body: req.body })),
 );
 
 export { route as UserRoute };
