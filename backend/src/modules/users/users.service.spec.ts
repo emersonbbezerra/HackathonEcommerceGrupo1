@@ -1,7 +1,12 @@
 import { ServerError } from "@/common/errors/server-error";
 import { prismaMock } from "@/config/database/__mocks__/prisma";
+import * as bcrypt from "bcrypt";
 import { AuthService } from "../auth/auth.service";
-import { CreateUserType, UpdateUserType } from "./dtos/user.dto";
+import {
+  CreateUserType,
+  DeleteUserType,
+  UpdateUserType,
+} from "./dtos/user.dto";
 import { UsersService } from "./users.service";
 
 let userService: UsersService;
@@ -216,32 +221,73 @@ describe("UserService", () => {
   });
 
   describe("Delete user", () => {
+    const userId = "d426bcf6-8536-41f3-91ba-c39c581554e2";
+    const deleteRequest: DeleteUserType = {
+      password: "correct_password",
+    };
+    it("Should throw an error if user does not exist", async () => {
+      prismaMock.user.findFirst.mockResolvedValue(null);
+
+      await expect(
+        userService.delete({ id: userId, body: deleteRequest }),
+      ).rejects.toThrow("User not exist.");
+    });
+
+    it("Should throw an error if password does not match", async () => {
+      prismaMock.user.findFirst.mockResolvedValue({
+        id: userId,
+        password: "hashed_password",
+      });
+
+      jest.spyOn(bcrypt, "compare").mockResolvedValue(false as never);
+
+      await expect(
+        userService.delete({ id: userId, body: deleteRequest }),
+      ).rejects.toThrow("Password not match.");
+    });
+
+    it("Should throw an error if deletion fails", async () => {
+      prismaMock.user.findFirst.mockResolvedValue({
+        id: userId,
+        password: "hashed_password",
+      });
+
+      jest.spyOn(bcrypt, "compare").mockResolvedValue(true as never);
+
+      prismaMock.user.delete.mockResolvedValue(null);
+
+      await expect(
+        userService.delete({ id: userId, body: deleteRequest }),
+      ).rejects.toThrow(ServerError);
+    });
+
     it("Should delete the user successfully", async () => {
+      prismaMock.user.findFirst.mockResolvedValue({
+        id: userId,
+        password: "hashed_password",
+      });
+
+      jest.spyOn(bcrypt, "compare").mockResolvedValue(true as never);
+
       prismaMock.user.delete.mockResolvedValue({
-        id: "d426bcf6-8536-41f3-91ba-c39c581554e2",
+        id: userId,
         first_name: "any_fname",
         last_name: "any_lname",
         email: "any@email.com",
         image: null,
-        password: "hash",
+        password: "hashed_password",
         phone: "123456789",
         role: "USER",
         createdAt: new Date("2024-08-30T19:30:57.510Z"),
         updatedAt: new Date("2024-08-30T19:30:57.510Z"),
       });
 
-      const result = await userService.delete(
-        "d426bcf6-8536-41f3-91ba-c39c581554e2",
-      );
+      const result = await userService.delete({
+        id: userId,
+        body: deleteRequest,
+      });
+
       expect(result).toBe(true);
-    });
-
-    it("Should throw an error if user does not exist", async () => {
-      prismaMock.user.delete.mockResolvedValue(null);
-
-      await expect(userService.delete("non-existing-id")).rejects.toThrow(
-        "User not exist.",
-      );
     });
   });
 });

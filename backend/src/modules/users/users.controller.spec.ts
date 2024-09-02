@@ -216,7 +216,10 @@ describe("UserController", () => {
     it("Should successfully delete a user", async () => {
       usersServiceMock.delete.mockResolvedValueOnce(true);
 
-      const resp = await userController.delete(id);
+      const resp = await userController.delete({
+        id,
+        body: { password: "any_password" },
+      });
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(
@@ -228,7 +231,10 @@ describe("UserController", () => {
       const errorMessage = "Deletion failed";
       usersServiceMock.delete.mockRejectedValueOnce(new Error(errorMessage));
 
-      const resp = await userController.delete(id);
+      const resp = await userController.delete({
+        id,
+        body: { password: "any_password" },
+      });
 
       expect(resp).toBeInstanceOf(ServerResponse);
       expect(resp).toEqual(new ServerResponse(500, errorMessage));
