@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import {
   CreateUserDTO,
   CreateUserType,
+  DeleteUserType,
   UpdateUserDTO,
   UpdateUserType,
 } from "./dtos/user.dto";
@@ -22,7 +23,13 @@ export interface IUserController {
     id: string;
     body: UpdateUserType;
   }): Promise<ServerResponse<any> | ZodValidateError>;
-  delete(id: string): Promise<ServerResponse<boolean | ServerError>>;
+  delete({
+    id,
+    body,
+  }: {
+    id: string;
+    body: DeleteUserType;
+  }): Promise<ServerResponse<boolean | ServerError>>;
 }
 
 class UserController implements IUserController {
@@ -87,9 +94,15 @@ class UserController implements IUserController {
     }
   }
 
-  async delete(id: string): Promise<ServerResponse<boolean | ServerError>> {
+  async delete({
+    id,
+    body,
+  }: {
+    id: string;
+    body: DeleteUserType;
+  }): Promise<ServerResponse<boolean | ServerError>> {
     try {
-      const result = await this.usersService.delete(id);
+      const result = await this.usersService.delete({ id, body });
       return new ServerResponse(202, "Successfully update user", result);
     } catch (error: any) {
       return new ServerResponse(500, error.message);

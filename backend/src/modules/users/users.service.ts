@@ -3,12 +3,16 @@ import { prismaMock } from "@/config/database/__mocks__/prisma";
 import { Prisma } from "@/config/database/prisma";
 import * as bcrypt from "bcrypt";
 import { AuthService } from "../auth/auth.service";
-import { CreateUserType, UpdateUserType } from "./dtos/user.dto";
+import {
+  CreateUserType,
+  DeleteUserType,
+  UpdateUserType,
+} from "./dtos/user.dto";
 import { UserSchema } from "./entities/user";
 
 export interface IUsersService {
   findAll(): Promise<UserSchema[]>;
-  create(data: CreateUserType): Promise<{ accessToken: string } | ServerError>;
+  create(data: CreateUserType): Promise<{ accessToken: string }>;
   getByUnique({
     field,
     value,
@@ -16,14 +20,8 @@ export interface IUsersService {
     field: string;
     value: string | number;
   }): Promise<UserSchema | null>;
-  update({
-    id,
-    data,
-  }: {
-    id: string;
-    data: UpdateUserType;
-  }): Promise<boolean | ServerError>;
-  delete(id: string): Promise<boolean | ServerError>;
+  update({ id, data }: { id: string; data: UpdateUserType }): Promise<boolean>;
+  delete({ id, body }: { id: string; body: DeleteUserType }): Promise<boolean>;
 }
 
 class UsersService implements IUsersService {
@@ -37,14 +35,12 @@ class UsersService implements IUsersService {
     return result;
   }
 
-  async create(
-    data: CreateUserType,
-  ): Promise<{ accessToken: string } | ServerError> {
+  async create(data: CreateUserType): Promise<{ accessToken: string }> {
     const userExist = await this.getByUnique({
       field: "email",
       value: data.email,
     });
-    if (userExist) throw new Error("User already exist.");
+    if (userExist) throw new ServerError("User already exist.");
 
     const { password, confirmPassword, ...rest } = data;
 
@@ -92,7 +88,7 @@ class UsersService implements IUsersService {
   }: {
     id: string;
     data: UpdateUserType;
-  }): Promise<boolean | ServerError> {
+  }): Promise<boolean> {
     const user = await this.getByUnique({ field: "id", value: id });
     if (!user) throw new ServerError("User not exist.");
 
@@ -105,11 +101,23 @@ class UsersService implements IUsersService {
     return true;
   }
 
-  async delete(id: string): Promise<boolean | ServerError> {
-    const user = await this.prisma.user.delete({ where: { id } });
+  async delete({
+    id,
+    body,
+  }: {
+    id: string;
+    body: DeleteUserType;
+  }): Promise<boolean> {
+    const user = await this.getByUnique({ field: "id", value: id });
     if (!user) throw new ServerError("User not exist.");
 
-    return true;
+    const passwordMatch = await bcrypt.compare(body.password, user.password);
+    if (!passwordMatch) throw new ServerError("Password not match.");
+
+    const deleted = await this.prisma.user.delete({ where: { id } });
+    if (!deleted) throw new ServerError("Password not match.");
+
+    return deleted;
   }
 }
 export { UsersService };

@@ -26,8 +26,13 @@ const UpdatePasswordUserDTO = z
       return { message: "password e confirmação devem ser iguais" };
   });
 
+const DeleteUserDTO = User.pick({
+  password: true,
+});
+
 export type CreateUserType = z.infer<typeof CreateUserDTO>;
 export type UpdateUserType = z.infer<typeof UpdateUserDTO>;
 export type UpdatePasswordUserType = z.infer<typeof UpdatePasswordUserDTO>;
+export type DeleteUserType = z.infer<typeof DeleteUserDTO>;
 
-export { CreateUserDTO, UpdatePasswordUserDTO, UpdateUserDTO };
+export { CreateUserDTO, DeleteUserDTO, UpdatePasswordUserDTO, UpdateUserDTO };
