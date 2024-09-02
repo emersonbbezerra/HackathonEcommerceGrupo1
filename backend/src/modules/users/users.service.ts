@@ -115,9 +115,9 @@ class UsersService implements IUsersService {
     if (!passwordMatch) throw new ServerError("Password not match.");
 
     const deleted = await this.prisma.user.delete({ where: { id } });
-    if (!deleted) throw new ServerError("Password not match.");
+    if (!deleted) throw new ServerError();
 
-    return deleted;
+    return !!deleted;
   }
 }
 export { UsersService };
