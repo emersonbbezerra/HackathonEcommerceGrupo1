@@ -27,14 +27,20 @@ jobs:
           node-version: "20.x"
           cache: "npm"
           cache-dependency-path: ./backend/package.json
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-      # Lint App
-      - name: Lint App
-        run: npm run format
-      # Build App
-      - name: Build App
-        run: npm run build
-      - name: Test
-        run: npm test
+      # Install dependenci
+      - name: Install dependenci
+        run: |
+          cd backend
+          npm install
+      - name: Formating files
+        run: |
+          cd backend
+          npm run format
+      - name: Build
+        run: |
+          cd backend
+          npm run build
+      - name: Testing
+        run: |
+          cd backend
+          npm test
