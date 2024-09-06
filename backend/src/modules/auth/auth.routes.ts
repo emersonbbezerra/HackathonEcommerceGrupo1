@@ -11,6 +11,12 @@ const authController = new AuthController();
 route.post("/login", async (req: Request, res: Response) =>
   res.send(await authController.login(req.body)),
 );
+route.get(
+  "/",
+  authMiddleware,
+  async (req: AuthenticatedRequest, res: Response) =>
+    res.send(await authController.show(req.user.userId)),
+);
 route.post(
   "/logout",
   authMiddleware,

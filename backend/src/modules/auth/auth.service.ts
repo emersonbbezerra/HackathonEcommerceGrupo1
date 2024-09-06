@@ -8,7 +8,8 @@ import { UserSchema } from "../users/entities/user";
 import { LoginSchema } from "./dtos/auth.dto";
 
 export interface IAuthService {
-  login(data: LoginSchema): Promise<{ accessToken: string } | ServerError>;
+  login(data: LoginSchema): Promise<{ accessToken: string }>;
+  show(id: string): Promise<UserSchema>;
   logout(id: string): Promise<boolean>;
   jwtSessionToken(userId: string): Promise<{ accessToken: string }>;
   generateToken(payload: any): Promise<string>;
@@ -20,16 +21,23 @@ class AuthService implements IAuthService {
     this.prisma = prisma || new Prisma();
   }
 
-  async login(
-    data: LoginSchema,
-  ): Promise<{ accessToken: string } | ServerError> {
+  async login(data: LoginSchema): Promise<{ accessToken: string }> {
     const user = await this.findUserByEmail(data.email);
 
     if (!user || !(await this.verifyPassword(data.password, user.password))) {
-      return new ServerError("Invalid email or password");
+      throw new ServerError("Invalid email or password");
     }
 
     return this.jwtSessionToken(user.id);
+  }
+
+  async show(id: string): Promise<UserSchema> {
+    const data = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    return data;
   }
 
   async logout(id: string): Promise<boolean> {

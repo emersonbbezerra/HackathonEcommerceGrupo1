@@ -1,11 +1,13 @@
 import { ServerResponse } from "@/common/constants";
 import { ZodValidateError } from "@/common/errors/zod-validate-error";
 import { ZodError } from "zod";
+import { UserSchema } from "../users/entities/user";
 import { AuthService } from "./auth.service";
 import { LoginDTO, LoginSchema } from "./dtos/auth.dto";
 
 export interface IAuthController {
   login(body: LoginSchema): Promise<ServerResponse<any> | ZodValidateError>;
+  show(userId: string): Promise<ServerResponse<UserSchema>>;
   logout(userId: string): Promise<ServerResponse<boolean>>;
 }
 
@@ -28,6 +30,15 @@ class AuthController implements IAuthController {
       if (error instanceof ZodError) {
         return new ZodValidateError(error);
       }
+      return new ServerResponse(500, error.message);
+    }
+  }
+
+  async show(userId: string): Promise<ServerResponse<UserSchema>> {
+    try {
+      const result = await this.authService.show(userId);
+      return new ServerResponse(200, "Successfully logged in", result);
+    } catch (error: any) {
       return new ServerResponse(500, error.message);
     }
   }
