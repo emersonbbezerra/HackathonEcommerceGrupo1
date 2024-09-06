@@ -17,13 +17,18 @@ describe("AuthService", () => {
     it("should return ServerError if user does not exist", async () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
-      const result = await authService.login({
-        email: "user@example.com",
-        password: "correct_password",
-      });
-
-      expect(result).toBeInstanceOf(ServerError);
-      expect((result as ServerError).message).toBe("Invalid email or password");
+      expect(
+        authService.login({
+          email: "user@example.com",
+          password: "correct_password",
+        }),
+      ).rejects.toBeInstanceOf(ServerError);
+      expect(
+        authService.login({
+          email: "user@example.com",
+          password: "correct_password",
+        }),
+      ).rejects.toThrow("Invalid email or password");
     });
 
     it("should return ServerError if password is incorrect", async () => {
@@ -34,13 +39,18 @@ describe("AuthService", () => {
 
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      const result = await authService.login({
-        email: "user@example.com",
-        password: "wrong_password",
-      });
-
-      expect(result).toBeInstanceOf(ServerError);
-      expect((result as ServerError).message).toBe("Invalid email or password");
+      expect(
+        authService.login({
+          email: "user@example.com",
+          password: "wrong_password",
+        }),
+      ).rejects.toBeInstanceOf(ServerError);
+      expect(
+        authService.login({
+          email: "user@example.com",
+          password: "wrong_password",
+        }),
+      ).rejects.toThrow("Invalid email or password");
     });
 
     it("should return accessToken on successful login", async () => {

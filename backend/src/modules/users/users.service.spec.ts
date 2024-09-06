@@ -74,7 +74,7 @@ describe("UserService", () => {
 
       jest
         .spyOn(AuthService.prototype, "login")
-        .mockResolvedValue(new ServerError("Login error"));
+        .mockRejectedValueOnce(new ServerError("Login error"));
 
       await expect(userService.create(httpRequest)).rejects.toThrow(
         "Login error",
