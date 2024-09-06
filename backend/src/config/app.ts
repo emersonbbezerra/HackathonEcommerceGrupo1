@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { Application, json, urlencoded } from "express";
 
 import { routeNotFound } from "@/middleware";
@@ -14,6 +15,7 @@ class App {
   // Configs
   private config() {
     this.app.use(json());
+    this.app.use(cors({ origin: [/^(.*)/] }));
     this.app.use(urlencoded({ extended: true }));
   }
 
