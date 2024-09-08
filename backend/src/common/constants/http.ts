@@ -1,3 +1,5 @@
+import { ServerResponse } from "./server-response";
+
 export interface HttpResponse extends ServerResponse<typeof ServerResponse> {}
 
 export interface HttpRequest {
