@@ -6,7 +6,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node ./dist/server.js",
     "start:dev": "tsx watch --env-file=.env src/server.ts",
-    "build": "tsup",
+    "build": "tsc",
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "npm run test -- --watch",
     "test:coverage": "npm run test -- --coverage",
